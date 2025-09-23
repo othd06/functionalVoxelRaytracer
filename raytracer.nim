@@ -13,9 +13,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: perBlockDistances.x, y: distances.y-distances.x, z: distances.z-distances.x)
                 newPosition: Vector3 = position + normDir*distances.x
             if newGridPosition.x >= dimensions.x:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, WEST, Vector2(x: 1-(newPosition.z - floor(newPosition.z)), y: newPosition.y - floor(newPosition.y)), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, WEST, Vector2(x: 1-(newPosition.z - floor(newPosition.z)), y: newPosition.y - floor(newPosition.y)), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
         else:
@@ -24,9 +24,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: perBlockDistances.x, y: distances.y-distances.x, z: distances.z-distances.x)
                 newPosition: Vector3 = position + normDir*distances.x
             if newGridPosition.x < 0:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, EAST, Vector2(x: (newPosition.z - floor(newPosition.z)), y: (newPosition.y - floor(newPosition.y))), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, EAST, Vector2(x: (newPosition.z - floor(newPosition.z)), y: (newPosition.y - floor(newPosition.y))), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
     elif distances.y < distances.z:
@@ -36,9 +36,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: distances.x - distances.y, y: perBlockDistances.y, z: distances.z - distances.y)
                 newPosition: Vector3 = position + normDir*distances.y
             if newGridPosition.y >= dimensions.y:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, DOWN, Vector2(x: newPosition.x - floor(newPosition.x), y: newPosition.z - floor(newPosition.z)), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, DOWN, Vector2(x: newPosition.x - floor(newPosition.x), y: newPosition.z - floor(newPosition.z)), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
         else:
@@ -47,9 +47,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: distances.x - distances.y, y: perBlockDistances.y, z: distances.z - distances.y)
                 newPosition: Vector3 = position + normDir*distances.y
             if newGridPosition.y < 0:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, UP, Vector2(x: (newPosition.x - floor(newPosition.x)), y: (newPosition.z - floor(newPosition.z))), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, UP, Vector2(x: (newPosition.x - floor(newPosition.x)), y: (newPosition.z - floor(newPosition.z))), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
     else:
@@ -59,9 +59,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: distances.x - distances.z, y: distances.y - distances.z, z: perBlockDistances.z)
                 newPosition: Vector3 = position + normDir*distances.z
             if newGridPosition.z >= dimensions.z:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, SOUTH, Vector2(x: newPosition.x - floor(newPosition.x), y: newPosition.y - floor(newPosition.y)), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, SOUTH, Vector2(x: newPosition.x - floor(newPosition.x), y: newPosition.y - floor(newPosition.y)), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
         else:
@@ -70,9 +70,9 @@ func traceRayInWorld(model: Model, dimensions: tuple[x, y, z: int], position: Ve
                 newDistances: Vector3 = Vector3(x: distances.x - distances.z, y: distances.y - distances.z, z: perBlockDistances.z)
                 newPosition: Vector3 = position + normDir*distances.z
             if newGridPosition.z < 0:
-                return hitFunctions[0](model, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
+                return hitFunctions[0](model, dimensions, UP, Vector2(x: 0, y: 0), newPosition, normDir, hits)
             elif model[newGridPosition.x][newGridPosition.y][newGridPosition.z] != 0:
-                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, NORTH, Vector2(x: 1-(newPosition.x - floor(newPosition.x)), y: (newPosition.y - floor(newPosition.y))), newPosition, normDir, hits)
+                return hitFunctions[model[newGridPosition.x][newGridPosition.y][newGridPosition.z]](model, dimensions, NORTH, Vector2(x: 1-(newPosition.x - floor(newPosition.x)), y: (newPosition.y - floor(newPosition.y))), newPosition, normDir, hits)
             else:
                 return traceRayInWorld(model, dimensions, newPosition, normDir, hitFunctions, hits, newGridPosition, newDistances, perBlockDistances, directions)
 
@@ -80,21 +80,24 @@ func traceRay*(model: Model, dimensions: tuple[x, y, z: int], position: Vector3,
     let normDir = normalise(direction)
     if (abs(position.x) > dimensions.x/2) or (abs(position.y) > dimensions.y/2) or (abs(position.z) > dimensions.z/2):
         #We are outside the world
-        var distsAABB: seq[float] = @[]
+        var
+            distsAABB: array[6, float]
+            minDist: float = (dimensions.x.float+dimensions.y.float+dimensions.z.float)*3
         if normDir.x != 0:
-            distsAABB.add(((-dimensions.x/2)-position.x) / normDir.x)
-            distsAABB.add((( dimensions.x/2)-position.x) / normDir.x)
+            distsAABB[0] = ((-dimensions.x/2)-position.x) / normDir.x
+            distsAABB[1] = (( dimensions.x/2)-position.x) / normDir.x
         if normDir.y != 0:
-            distsAABB.add(((-dimensions.y/2)-position.y) / normDir.y)
-            distsAABB.add((( dimensions.y/2)-position.y) / normDir.y)
+            distsAABB[2] = ((-dimensions.y/2)-position.y) / normDir.y
+            distsAABB[3] = (( dimensions.y/2)-position.y) / normDir.y
         if normDir.z != 0:
-            distsAABB.add(((-dimensions.z/2)-position.z) / normDir.z)
-            distsAABB.add((( dimensions.z/2)-position.z) / normDir.z)
-        distsAABB = filter(distsAABB, func(a: float): bool = a>0)
-        if distsAABB.len == 0:
-            return hitFunctions[0](model, UP #[This is arbitrary in the case that no voxel is hit]#, Vector2(x: 0, y: 0), position, direction, hits)
-        distsAABB = quicksort(distsAABB, func(a, b: float): bool = a>b)
-        return traceRay(model, dimensions, position + normDir*distsAABB[0], direction, hitFunctions, hits)
+            distsAABB[4] = ((-dimensions.z/2)-position.z) / normDir.z
+            distsAABB[5] = (( dimensions.z/2)-position.z) / normDir.z
+        for i in 0..<6:
+            if distsAABB[i] > 0 and distsAABB[i] < minDist:
+                minDist = distsAABB[i]
+        if minDist > (dimensions.x.float+dimensions.y.float+dimensions.z.float)*2:
+            return hitFunctions[0](model, dimensions, UP #[This is arbitrary in the case that no voxel is hit]#, Vector2(x: 0, y: 0), position, direction, hits)
+        return traceRay(model, dimensions, position + normDir*minDist, direction, hitFunctions, hits)
     else:
         let
             worldPosition: Vector3 = position + Vector3(x: dimensions.x/2, y: dimensions.y/2, z: dimensions.z/2)

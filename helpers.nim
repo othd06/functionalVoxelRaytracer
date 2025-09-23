@@ -14,6 +14,7 @@ type
         x*: float64
         y*: float64
         z*: float64
+    Matrix*[R: static[int], C: static[int]] = array[R, array[C, float]] 
     Vector2* = object
         x*: float64
         y*: float64
@@ -24,7 +25,7 @@ type
     Model* = seq[seq[seq[uint8]]]
     SimpleModel* = seq[seq[seq[uint8]]]
     FatalError* = object of CatchableError
-    hitFunction* = proc(voxelGrid: Model, face: Face, location: Vector2, position: Vector3, incidentAngle: Vector3, hits: int): Colour {.noSideEffect.}
+    hitFunction* = proc(voxelGrid: Model, dimensions: tuple[x, y, z: int], face: Face, location: Vector2, position: Vector3, incidentAngle: Vector3, hits: int): Colour {.noSideEffect.}
 
 func toModel*(simple: SimpleModel): Model=
     return simple
@@ -59,6 +60,9 @@ func `+`*(a, b: Vector3): Vector3=
 func `+`*(a, b: Vector2): Vector2=
     return Vector2(x: a.x+b.x, y: a.y+b.y)
 
+func `+`*(a, b: Colour): Colour=
+    return Colour(r: a.r+b.r, g: a.g+b.g, b: a.b+b.b)
+
 func `-`*(a, b: Vector3): Vector3=
     return Vector3(x: a.x-b.x, y: a.y-b.y, z: a.z-b.z)
 
@@ -70,6 +74,23 @@ func `*`*(a: Vector3, b: float64): Vector3=
 
 func `*`*(a: Vector2, b: float64): Vector2=
     return Vector2(x: a.x*b, y: a.y*b)
+
+func `*`*(a: Colour, b: float64): Colour=
+    return Colour(r: uint8(a.r.float64*b), g: uint8(a.g.float64*b), b: uint8(a.b.float64*b))
+
+func `*`*[C: static[int], RC: static[int], R: static[int]](a: Matrix[R, RC], b: Matrix[RC, C]): Matrix[R, C]=
+    var output: Matrix[R, C]
+    for i in 0..<R:
+        for j in 0..<C:
+            output[i][j] = 0
+            for k in 0..<RC:
+                output[i][j] += a[i][k]*b[k][j]
+
+func `*`*(a: Matrix[3, 3], b: Vector3): Vector3=
+    Vector3(x: b.x*a[0][0] + b.y*a[0][1] + b.z*a[0][2], y: b.x*a[1][0] + b.y*a[1][1] + b.z*a[1][2], z: b.x*a[2][0] + b.y*a[2][1] + b.z*a[2][2])
+
+func `*`*(a: Matrix[2, 2], b: Vector2): Vector2=
+    Vector2(x: b.x*a[0][0] + b.y*a[0][1], y: b.x*a[1][0] + b.y*a[1][1])
 
 func `/`*(a: Vector3, b: float64): Vector3=
     return Vector3(x: a.x/b, y: a.y/b, z: a.z/b)
