@@ -21,13 +21,43 @@ type
         r*: uint8
         g*: uint8
         b*: uint8
-    Model* = seq[seq[seq[uint8]]]
+    Brick* = tuple[isEmpty: bool, brick: array[8, array[8, array[8, uint8]]]]
+    Model* = seq[seq[seq[Brick]]]
     SimpleModel* = seq[seq[seq[uint8]]]
     FatalError* = object of CatchableError
     hitFunction* = proc(voxelGrid: Model, face: Face, location: Vector2, position: Vector3, incidentAngle: Vector3, hits: int): Colour {.noSideEffect.}
 
-func toModel*(simple: SimpleModel): Model=
-    return simple
+func isEmpty(input: array[8, array[8, array[8, uint8]]]): bool=
+    for x in 0..<8:
+        for y in 0..<8:
+            for z in 0..<8:
+                if input[x][y][z] != 0: return false
+    return true
+
+func toModel*(simple: SimpleModel, dims: tuple[x, y, z: int]): Model=
+    var newSimple: SimpleModel
+    for x in 0..<int(ceil(dims.x.float/8)*8):
+        newSimple.add(@[])
+        for y in 0..<int(ceil(dims.y.float/8)*8):
+            newSimple[newSimple.high].add(@[])
+            for z in 0..<int(ceil(dims.z.float/8)*8):
+                if x<dims.x and y<dims.y and z<dims.z:
+                    newSimple[newSimple.high][newSimple[newSimple.high].high].add(simple[x][y][z])
+                else:
+                    newSimple[newSimple.high][newSimple[newSimple.high].high].add(0.uint8)
+    var output : Model
+    for x in 0..<int(ceil(dims.x.float/8)):
+        output.add(@[])
+        for y in 0..<int(ceil(dims.y.float/8)):
+            output[output.high].add(@[])
+            for z in 0..<int(ceil(dims.z.float/8)):
+                var newBrick : array[8, array[8, array[8, uint8]]]
+                for i in 0..<8:
+                    for j in 0..<8:
+                        for k in 0..<8:
+                            newBrick[i][j][k] = newSimple[x*8+i][y*8+j][z*8+k]
+                output[output.high][output[output.high].high].add((isEmpty(newBrick), newBrick))
+    return output
 
 func normalise*(input: Vector3): Vector3=
     if input == Vector3(x: 0, y: 0, z: 0):

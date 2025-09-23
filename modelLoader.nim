@@ -68,7 +68,7 @@ proc loadModel*(path: string) : tuple[dims: tuple[x, y, z: int], model: Model]=
     let
         (dimensions, voxData) = loadBinvox(path)
         voxModel = redimension(dimensions, getModel(dimensions, raw(voxData)))
-    return (dims: dimensions, model: toModel(voxModel))
+    return (dims: dimensions, model: toModel(voxModel, dimensions))
 
 
 
