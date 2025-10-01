@@ -1,4 +1,4 @@
-This is a software raytracer in Nim that outputs to a .qoi image file.
+This is a software voxel raytracer in Nim using the "3D DDA" algorithm that outputs to a .qoi image file and accepts a .binvox voxel model.
 The code largely adheres to the functional style (although I do make use of loops and mutable variables within functions)
 The code is designed to be highly modular (ie, the qoi encoder doesn't care about the reytracer which doesn't care about the material system etc...)
 The only dependency (other than std) is weave for multithreading (which can be installed through nimble)
